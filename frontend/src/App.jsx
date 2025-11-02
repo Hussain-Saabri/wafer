@@ -8,7 +8,7 @@ import axios from "axios";
 
 function Home() {
   const [task, setTask] = useState([]);
-  const [selectedTask, setSelectedTask] = useState(null); // 👈 for showing popup
+  const [selectedTask, setSelectedTask] = useState(null); //for showing popup
   const navigate = useNavigate();
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
   
@@ -16,7 +16,7 @@ function Home() {
   const fetchTasks = async () => {
       try {
         const response = await axios.get(`${API_BASE}/all-task`);
-        setTask(response.data.reqData);
+        setTask(response.data.reqData || []);
       } catch (error) {
         console.log("Error getting the data", error);
       }
@@ -33,7 +33,7 @@ function Home() {
 
      try {
       console.log(selectedTask.id);
-       const response = await axios.put(`http://localhost:8000/update-task/${selectedTask.id}`);
+       const response = await axios.put(`${API_BASE}/update-task/${selectedTask.id}`);
        console.log(response);
        setSelectedTask(null);
        fetchTasks();// calling the fetchTasks function again to reder the update
