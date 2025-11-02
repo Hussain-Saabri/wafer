@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const db = require("./db"); //importing the db
+const cors = require("cors");
+app.use(cors());
 app.use(express.json());
 
 
@@ -14,11 +16,18 @@ app.listen(port, () => {
 
 // adding the task
 app.post("/add", (req, res) => {
-  const { title, status } = req.body;
+  const { title, status , description} = req.body;
+    if(!title)
+    {
+        return res.json({error:true,message:"title is missing"});
+    }
+    if(!description)
+    {
+        return res.json({error:true,message:"description is missing"});
+    }
+  const query = "INSERT INTO task (title, status , description) VALUES (?, ? ,?)";
 
-  const query = "INSERT INTO task (title, status) VALUES (?, ?)";
-
-  db.query(query, [title, status || "pending"], (err, result) => {
+  db.query(query, [title, status || "pending", description], (err, result) => {
     if (err) {
       console.error("Error inserting the data:", err);
       return res.status(500).json({ message: "Database error" });
@@ -57,7 +66,7 @@ app.delete("/del-task/:id",(req,res)=>{
     const {id} = req.params; // getting the id 
     console.log("[Delete] api called");
     console.log(id);
-    const query = `Select * from task where id=${id}`;
+    const query = `Delete from task where id=${id}`;
     db.query(query,[],(error,result)=>{
         if(error)
         {
