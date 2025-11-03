@@ -14,9 +14,12 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("✅ Server started successfully");
+  res.send("Server started successfully");
 });
-
+const PORT = process.env.DB_PORT || 8000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
 // SendGrid setup
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -519,8 +522,5 @@ app.post("/create-account", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 8000; // ✅ Render gives its own port
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+
 
