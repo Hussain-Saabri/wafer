@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
 import db from "./db.js";
-import { authenticateToken } from "./utilities.js";
+
 
 const app = express();
 app.use(cors());
@@ -19,6 +19,7 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
+
 });
 // SendGrid setup
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -34,20 +35,20 @@ app.post("/create-account", async (req, res) => {
       return res.status(400).json({ error: true, message: "All fields are required" });
     }
 
-    // 2️⃣ Check if user already exists
+    // Check if user already exists
     const [existingUser] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     if (existingUser.length > 0) {
       return res.json({ error: true, message: "Email already exists" });
     }
 
-    // 3️⃣ Generate OTP and expiry
+    //  Generate OTP and expiry
     const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min expiry
 
-    // 4️⃣ Hash password
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 5️⃣ Insert user into MySQL
+    // Insert user into MySQL
     const insertQuery = `
       INSERT INTO users (fullname, email, password, otp, otp_expiry)
       VALUES (?, ?, ?, ?, ?)
@@ -60,7 +61,7 @@ app.post("/create-account", async (req, res) => {
       otpExpiry,
     ]);
 
-    console.log("✅ User inserted with ID:", result.insertId);
+    console.log("User inserted with ID:", result.insertId);
     console.log("6-digit OTP:", otp);
     console.log("OTP expiry:", otpExpiry);
 
@@ -92,14 +93,14 @@ app.post("/create-account", async (req, res) => {
       `,
     });
 
-    console.log("📨 OTP email sent successfully!");
+    console.log("OTP email sent successfully!");
 
-    // 7️⃣ Generate JWT token
+    //Generate JWT token
     const accessToken = jwt.sign({ userId: result.insertId, email }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "36000m", // around 25 days
     });
 
-    // 8️⃣ Send response
+    // Send response
     res.status(201).json({
       error: false,
       message: "User created successfully! OTP sent to email.",
@@ -126,11 +127,11 @@ app.post("/login", async (req, res) => {
 
     const { email, password } = req.body;
 
-    // 1️⃣ Validate inputs
+    // Validate inputs
     if (!email) return res.status(400).json({ error: true, message: "Email is required" });
     if (!password) return res.status(400).json({ error: true, message: "Password is required" });
 
-    // 2️⃣ Check if user exists
+    // Check if user exists
     const [result] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
 
     if (result.length === 0) {
@@ -140,14 +141,14 @@ app.post("/login", async (req, res) => {
 
     const user = result[0];
 
-    // 3️⃣ Compare hashed passwords
+    // Compare hashed passwords
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      console.log("❌ Invalid password");
+      console.log("Invalid password");
       return res.status(401).json({ error: true, message: "Invalid email or password" });
     }
 
-    // 4️⃣ Generate JWT
+    // Generate JWT
     const accessToken = jwt.sign(
       { user_id: user.user_id, email: user.email },
       process.env.ACCESS_TOKEN_SECRET,
@@ -156,7 +157,7 @@ app.post("/login", async (req, res) => {
 
     console.log("Login successful for:", user.email);
 
-    // 5️⃣ Send response
+    // Send response
     return res.status(200).json({
       error: false,
       message: "Login successfull",
@@ -169,7 +170,7 @@ app.post("/login", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("🔥 Login error:", error);
+    console.error("Login error:", error);
     return res.status(500).json({ error: true, message: "Internal server error" });
   }
 });
@@ -181,12 +182,12 @@ app.post("/verify-otp", async (req, res) => {
   console.log("Verifying OTP...");
   const { email, otp } = req.body;
 
-  // 1️⃣ Check for required fields
+  // Check for required fields
   if (!email) return res.json({ error: true, message: "Email is required" });
   if (!otp) return res.json({ error: true, message: "otp is required" });
 
   try {
-    // 2️⃣ Check if email exists in users table
+    // Check if email exists in users table
     const [emailResult] = await db.query(
       "SELECT * FROM users WHERE email = ?",
       [email]
@@ -202,7 +203,7 @@ app.post("/verify-otp", async (req, res) => {
 
     console.log("Email exists bro");
 
-    // 3️⃣ Check if OTP matches
+    // Check if OTP matches
     const [otpResult] = await db.query(
       "SELECT * FROM users WHERE email = ? AND otp = ?",
       [email, otp]
@@ -216,13 +217,13 @@ app.post("/verify-otp", async (req, res) => {
     const otpExpiry = otpResult[0].otpExpiry;
     const now = new Date();
 
-    // 4️⃣ Check if OTP is expired
+    // Check if OTP is expired
     if (new Date(otpExpiry) < now) {
       console.log("Otp has expired");
       return res.json({ error: false, message: "OTP has expired" });
     }
 
-    // 5️⃣ OTP verified successfully
+    // OTP verified successfully
     console.log("Otp verified successfully");
     return res.json({ error: false, message: "otp verified" });
 
@@ -243,7 +244,7 @@ app.post("/add", async (req, res) => {
     // Extract fields from request body
     const { title, status, description, user_id } = req.body;
 
-    // 1️⃣ Input validation
+    // Input validation
     if (!title) {
       return res.status(400).json({ error: true, message: "Title is required" });
     }
@@ -256,7 +257,7 @@ app.post("/add", async (req, res) => {
       return res.status(400).json({ error: true, message: "User ID is required" });
     }
 
-    // 2️⃣ Insert task into MySQL
+    //  Insert task into MySQL
     const query =
       "INSERT INTO task (title, status, description, user_id) VALUES (?, ?, ?, ?)";
     const [result] = await db.query(query, [
@@ -266,7 +267,7 @@ app.post("/add", async (req, res) => {
       user_id,
     ]);
 
-    console.log("✅ Task inserted successfully, ID:", result.insertId);
+    console.log("Task inserted successfully, ID:", result.insertId);
 
     // 3️⃣ Return response
     return res.status(201).json({
@@ -321,14 +322,14 @@ app.get("/all-task/:user_id", async (req, res) => {
     const [result] = await db.query(query, [user_id]);
 
     if (result.length === 0) {
-      console.log("⚠️ No tasks found for this user");
+      console.log(" No tasks found for this user");
       return res.status(404).json({
         error: true,
         message: "No tasks found for this user",
       });
     }
 
-    console.log("✅ Tasks fetched successfully");
+    console.log("Tasks fetched successfully");
     return res.status(200).json({
       success: true,
       message: "Tasks fetched successfully",
@@ -336,15 +337,13 @@ app.get("/all-task/:user_id", async (req, res) => {
     });
 
   } catch (err) {
-    console.error("🔥 Error getting the data:", err);
+    console.error("Error getting the data:", err);
     return res.status(500).json({
       error: true,
       message: "Internal server error while fetching tasks",
     });
   }
 });
-
-
 
 
 
@@ -371,7 +370,7 @@ app.delete("/del-task/:id", async (req, res) => {
       deletedId: id,
     });
   } catch (err) {
-    console.error("🔥 Error deleting task:", err);
+    console.error("Error deleting task:", err);
     return res.status(500).json({ error: true, message: "Internal server error" });
   }
 });
@@ -381,25 +380,25 @@ app.delete("/del-task/:id", async (req, res) => {
 app.put("/update-task/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("🛠️ [UPDATE] /update-task called with ID:", id);
+    console.log("[UPDATE] /update-task called with ID:", id);
 
-    // ✅ Validate ID
+    // Validate ID
     if (!id) {
       return res.status(400).json({ error: true, message: "Task ID is required" });
     }
 
-    // ✅ Fetch current task status
+    // Fetch current task status
     const [rows] = await db.query("SELECT status FROM task WHERE id = ?", [id]);
 
     if (rows.length === 0) {
       return res.status(404).json({ error: true, message: "Task not found" });
     }
 
-    // ✅ Toggle the status
+    // Toggle the status
     const currentStatus = rows[0].status;
     const newStatus = currentStatus === "pending" ? "completed" : "pending";
 
-    // ✅ Update status in DB
+    // Update status in DB
     const [updateResult] = await db.query(
       "UPDATE task SET status = ? WHERE id = ?",
       [newStatus, id]
@@ -409,9 +408,9 @@ app.put("/update-task/:id", async (req, res) => {
       return res.status(400).json({ error: true, message: "Failed to update task" });
     }
 
-    console.log(`✅ Task ID ${id} updated from '${currentStatus}' → '${newStatus}'`);
+    console.log(`Task ID ${id} updated from '${currentStatus}' → '${newStatus}'`);
 
-    // ✅ Send success response
+    // Send success response
     return res.status(200).json({
       error: false,
       message: `Task status updated successfully to '${newStatus}'`,
@@ -419,7 +418,7 @@ app.put("/update-task/:id", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("🔥 Error updating task:", error);
+    console.error("Error updating task:", error);
     return res.status(500).json({ error: true, message: "Internal server error" });
   }
 });
@@ -433,25 +432,25 @@ app.post("/create-account", async (req, res) => {
 
     const { fullname, email, password } = req.body;
 
-    // 1️⃣ Basic validation
+    // Basic validation
     if (!fullname || !email || !password) {
       return res.status(400).json({ error: true, message: "All fields are required" });
     }
 
-    // 2️⃣ Check if user already exists
+    // Check if user already exists
     const [existingUser] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     if (existingUser.length > 0) {
       return res.json({ error: true, message: "Email already exists" });
     }
 
-    // 3️⃣ Generate OTP and expiry
+    // Generate OTP and expiry
     const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min expiry
 
-    // 4️⃣ Hash password
+    //  Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 5️⃣ Insert user into MySQL
+    // Insert user into MySQL
     const insertQuery = `
       INSERT INTO users (fullname, email, password, otp, otp_expiry)
       VALUES (?, ?, ?, ?, ?)
@@ -464,11 +463,11 @@ app.post("/create-account", async (req, res) => {
       otpExpiry,
     ]);
 
-    console.log("✅ User inserted with ID:", result.insertId);
+    console.log("User inserted with ID:", result.insertId);
     console.log("6-digit OTP:", otp);
     console.log("OTP expiry:", otpExpiry);
 
-    // 6️⃣ Send OTP via SendGrid
+    // Send OTP via SendGrid
     await sgMail.send({
       from: "dadapir19ce30@gmail.com",
       to: [email],
@@ -496,14 +495,14 @@ app.post("/create-account", async (req, res) => {
       `,
     });
 
-    console.log("📨 OTP email sent successfully!");
+    console.log("OTP email sent successfully!");
 
-    // 7️⃣ Generate JWT token
+    // Generate JWT token
     const accessToken = jwt.sign({ userId: result.insertId, email }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "36000m", // around 25 days
     });
 
-    // 8️⃣ Send response
+    // Send response
     res.status(201).json({
       error: false,
       message: "User created successfully! OTP sent to email.",
@@ -517,7 +516,7 @@ app.post("/create-account", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("🔥 Error creating account:", error);
+    console.error("Error creating account:", error);
     res.status(500).json({ error: true, message: "Internal server error" });
   }
 });

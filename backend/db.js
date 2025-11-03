@@ -14,5 +14,5 @@ const db = mysql.createPool({
   queueLimit: 0,
 });
 
-console.log("✅ Connected to MySQL Database!");
+console.log("Connected to MySQL Database!");
 export default db;
