@@ -1,10 +1,7 @@
 // db.js
 const mysql = require("mysql2/promise");
 
-import mysql from "mysql2/promise";
-import dotenv from "dotenv";
 
-dotenv.config();
 
 const db = mysql.createPool({
   host: process.env.DB_HOST,
@@ -17,7 +14,7 @@ const db = mysql.createPool({
 (async () => {
   try {
     const connection = await db.getConnection();
-    console.log("Connected to Database!");
+    console.log("✅ Connected to Database!");
     connection.release();
   } catch (err) {
     console.error("Error connecting to MySQL:", err);
