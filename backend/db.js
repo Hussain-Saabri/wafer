@@ -1,4 +1,7 @@
 import mysql from "mysql2/promise";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 let db;
 
@@ -13,7 +16,7 @@ let db;
     });
 
     const connection = await db.getConnection();
-    console.log("✅ Connected to Database!");
+    console.log("✅ Connected to MySQL Database!");
     connection.release();
   } catch (err) {
     console.error("❌ Error connecting to MySQL:", err);

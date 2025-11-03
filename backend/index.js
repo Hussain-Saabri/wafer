@@ -16,7 +16,7 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Server started successfully");
 });
-const PORT = process.env.DB_PORT || 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
