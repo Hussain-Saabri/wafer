@@ -18,10 +18,12 @@ const sgMail = require("@sendgrid/mail");
 app.get("/", (req, res) => {
   res.send("app started");
 });
-const port = 8000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);//using the template literal
+const PORT = process.env.DB_PORT || 8000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });
+
 // initialiing the sendGrid(working successfully)
 sgMail.setApiKey( process.env.SENDGRID_API_KEY );
 // adding the task
