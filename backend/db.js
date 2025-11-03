@@ -1,21 +1,22 @@
-const mysql = require("mysql2");
-const db = mysql.createConnection(
-    {
-        host:"sql12.freesqldatabase.com",
-        user:"sql12805658",
-        password:"gJR4E4cfQt",
-        database:"sql12805658"
-    }
+// db.js
+const mysql = require("mysql2/promise");
 
-
-)
-
-db.connect((err) => {
-  if (err) {
-    console.log("Error connecting to MySQL:", err);
-  } else {
-    console.log("Connected to Database!");
-  }
+const db = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "to_do_db",
 });
+
+
+(async () => {
+  try {
+    const connection = await db.getConnection();
+    console.log("✅ Connected to Database!");
+    connection.release(); 
+  } catch (err) {
+    console.error("Error connecting to MySQL:", err);
+  }
+})();
 
 module.exports = db;
