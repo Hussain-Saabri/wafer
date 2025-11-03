@@ -79,7 +79,7 @@ function Home() {
   // Delete a task
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:8000/del-task/${selectedTask.id}`);
+      const response = await axios.delete(`${API_BASE}/del-task/${selectedTask.id}`);
       toast.success("Task Deleted Successfully!", {
         style: {
           background: "linear-gradient(145deg, #ef4444, #b91c1c)",
