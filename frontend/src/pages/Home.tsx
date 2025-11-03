@@ -48,22 +48,47 @@ function Home() {
     try {
       const response = await axios.put(`${API_BASE}/update-task/${selectedTask.id}`);
       toast.success("Task Updated Successfully!", {
-        style: {
-          background: "linear-gradient(145deg, #22c55e, #15803d)",
-          color: "#eaffea",
-          fontWeight: "700",
-          borderRadius: "16px",
-          padding: "10px 24px",
-          boxShadow:
-            "0 6px 20px rgba(34, 197, 94, 0.5), 0 0 10px rgba(74, 222, 128, 0.3)",
-          fontSize: "18px",
-          letterSpacing: "0.7px",
-          textTransform: "capitalize",
-          fontFamily: "'Poppins', sans-serif",
-          backdropFilter: "blur(8px)",
-        },
-        duration: 4000,
-      });
+  style: {
+    // 🌿 Fresh green gradient with soft glow
+    background:
+      window.innerWidth < 500
+        ? "linear-gradient(160deg, #22c55e, #16a34a)"
+        : "linear-gradient(145deg, #16a34a, #15803d)",
+
+    color: "#f0fff4", // soft white-green text
+    fontWeight: "600",
+    borderRadius: "16px",
+    padding: window.innerWidth < 500 ? "10px 16px" : "12px 28px",
+    fontSize: window.innerWidth < 500 ? "14px" : "17px",
+    letterSpacing: "0.5px",
+    fontFamily: "'Poppins', sans-serif",
+    textTransform: "capitalize",
+
+    // 🧊 Glass effect and soft depth
+    backdropFilter: "blur(8px) saturate(180%)",
+    boxShadow:
+      "0 6px 20px rgba(34, 197, 94, 0.45), 0 0 12px rgba(74, 222, 128, 0.35)",
+    border: "1px solid rgba(255, 255, 255, 0.15)",
+
+    // ⚙️ Layout and responsiveness
+    width: window.innerWidth < 500 ? "85%" : "auto",
+    maxWidth: "90vw",
+    margin: "0 auto",
+    textAlign: "center",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+
+    transition: "all 0.3s ease-in-out",
+  },
+  iconTheme: {
+    primary: "#bbf7d0", // pastel green icon
+    secondary: "#14532d", // dark green accent
+  },
+  duration: 2000,
+});
+
 
       setLoading(true);
       setTimeout(() => {
@@ -127,6 +152,55 @@ function Home() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+  toast("Logout Successfully!", {
+  icon: "👋",
+  position: window.innerWidth < 500 ? "top-center" : "top-right", // ✅ mobile → top-center, desktop → top-right
+  style: {
+    // 🌇 Warm gradient with subtle glow
+    background:
+      window.innerWidth < 500
+        ? "linear-gradient(155deg, rgba(249,115,22,0.95), rgba(220,38,38,0.9))"
+        : "linear-gradient(135deg, rgba(234,88,12,0.9), rgba(185,28,28,0.85))",
+
+    color: "#fff7ed", // soft white-orange text
+    fontWeight: "600",
+    borderRadius: "16px",
+    padding: window.innerWidth < 500 ? "10px 18px" : "14px 26px",
+    fontSize: window.innerWidth < 500 ? "14px" : "17px",
+    letterSpacing: "0.4px",
+    fontFamily: "'Poppins', sans-serif",
+    textTransform: "capitalize",
+
+    // 🧊 Glassy blur + depth
+    backdropFilter: "blur(10px) saturate(180%)",
+    boxShadow:
+      "0 6px 24px rgba(234, 88, 12, 0.4), 0 0 12px rgba(249, 115, 22, 0.25)",
+    border: "1px solid rgba(255, 255, 255, 0.15)",
+
+    // 📱 Responsive width + alignment
+    width: window.innerWidth < 500 ? "90%" : "auto",
+    maxWidth: "92vw",
+    margin: "0 auto",
+    textAlign: "center",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+
+    // ✨ Smooth slide-in animation
+    transform: "translateY(-10px)",
+    animation: "toastSlideIn 0.4s ease-out",
+    transition: "all 0.3s ease-in-out",
+  },
+  iconTheme: {
+    primary: "#fed7aa", 
+    secondary: "#7f1d1d", 
+  },
+  duration: 2500,
+});
+
+
+
     setToken(null);
     navigate("/login");
   };
@@ -140,7 +214,6 @@ function Home() {
       {/* 🖥️ Desktop View */}
       <div className="hidden md:block">
         <div className="min-h-screen bg-black bg-opacity-50 text-white py-10 px-6 relative">
-          
           {/* Header */}
           <div className="flex justify-between items-center mb-12">
             <h1 className="text-4xl font-extrabold text-center">
@@ -176,7 +249,9 @@ function Home() {
                 <div className="flex justify-start">
                   <span
                     className={`text-xl sm:text-2xl ${
-                      ele.status === "completed" ? "text-green-500" : "text-black"
+                      ele.status === "completed"
+                        ? "text-green-500"
+                        : "text-black"
                     }`}
                   >
                     <FontAwesomeIcon icon={faCircleCheck} />
@@ -230,24 +305,25 @@ function Home() {
                 <div className="flex items-center gap-3">
                   <span
                     className={`text-xl ${
-                      ele.status === "completed" ? "text-green-500" : "text-black"
+                      ele.status === "completed"
+                        ? "text-green-500"
+                        : "text-black"
                     }`}
                   >
                     <FontAwesomeIcon icon={faCircleCheck} />
                   </span>
                   <div>
                     <h2 className="text-sm font-bold uppercase text-gray-800">
-  {ele.title && ele.title.length > 15
-    ? ele.title.slice(0, 15) + "..."
-    : ele.title}
-</h2>
+                      {ele.title && ele.title.length > 15
+                        ? ele.title.slice(0, 15) + "..."
+                        : ele.title}
+                    </h2>
 
-                   <p className="text-xs text-gray-500">
-  {ele.description.length > 10 
-    ? ele.description.slice(0, 20) + "..." 
-    : ele.description}
-</p>
-
+                    <p className="text-xs text-gray-500">
+                      {ele.description.length > 10
+                        ? ele.description.slice(0, 20) + "..."
+                        : ele.description}
+                    </p>
                   </div>
                 </div>
 
@@ -314,7 +390,8 @@ function Home() {
                 {selectedTask.title}
               </h2>
               <p className="text-gray-600 text-justify mb-6">
-                {selectedTask.description || "No description provided for this task."}
+                {selectedTask.description ||
+                  "No description provided for this task."}
               </p>
 
               <div className="flex flex-col justify-center items-center gap-3">
@@ -335,9 +412,6 @@ function Home() {
           </div>
         </div>
       )}
-
-
-      
     </>
   );
 }

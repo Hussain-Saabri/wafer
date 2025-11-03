@@ -4,7 +4,7 @@ import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
 import Loader from "../components/Loader";
 
-// ✅ Define type for location.state
+
 interface LocationState {
   email?: string;
   message?: string;
@@ -18,7 +18,7 @@ const VerifyOtp: React.FC = () => {
   const email = state?.email || "";
   const passReset = state?.message;
 
-  // ✅ State definitions with types
+
   const [otp, setOtp] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,7 +36,7 @@ const VerifyOtp: React.FC = () => {
     },
   };
 
-  // ✅ Handle OTP Verification
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -89,7 +89,7 @@ const VerifyOtp: React.FC = () => {
     }
   };
 
-  // ✅ Handle OTP Resend
+  // Handle OTP Resend
   const handleResendOtp = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setOtp("");

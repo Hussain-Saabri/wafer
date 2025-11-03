@@ -5,7 +5,6 @@ import { validateEmail } from "../utils/helper";
 import axiosInstance from "../utils/axiosInstance";
 import { ClipLoader } from "react-spinners";
 
-
 interface SignupResponse {
   data: {
     error?: boolean;
@@ -51,11 +50,14 @@ const SignUp: React.FC = () => {
     try {
       console.log("inside try block");
 
-      const response = await axiosInstance.post<any, SignupResponse>("/create-account", {
-        fullname: name,
-        email: email,
-        password: password,
-      });
+      const response = await axiosInstance.post<any, SignupResponse>(
+        "/create-account",
+        {
+          fullname: name,
+          email: email,
+          password: password,
+        }
+      );
 
       console.log("response", response);
 
@@ -143,7 +145,10 @@ const SignUp: React.FC = () => {
 
           <p className="text-center text-sm text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:underline font-medium">
+            <Link
+              to="/login"
+              className="text-blue-600 hover:underline font-medium"
+            >
               Login
             </Link>
           </p>

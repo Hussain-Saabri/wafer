@@ -5,7 +5,7 @@ import PasswordInput from "../components/PasswordInput";
 import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
 
-// ✅ Define backend response types (customize as per your API)
+// defining backend response types
 interface LoginResponse {
   data: {
     accessToken?: string;
@@ -62,29 +62,41 @@ const Login: React.FC = () => {
         localStorage.setItem("token", response.data.accessToken);
         localStorage.setItem("user_id", response.data.user?.user_id || "");
 
-        toast.success("Login Successful!", {
+        toast.success("Login Sucessfully!", {
           style: {
-            background: "linear-gradient(145deg, #60a5fa, #2563eb)",
-            color: "#e0f2fe",
-            fontWeight: "700",
-            borderRadius: "16px",
-            padding:
-              window.innerWidth < 500 ? "8px 16px" : "10px 24px",
-            boxShadow:
-              "0 6px 20px rgba(37, 99, 235, 0.5), 0 0 10px rgba(96, 165, 250, 0.3)",
-            fontSize: window.innerWidth < 500 ? "14px" : "18px",
-            letterSpacing: "0.5px",
-            textTransform: "capitalize",
+            background:
+              window.innerWidth < 500
+                ? "linear-gradient(145deg, rgba(59,130,246,0.9), rgba(37,99,235,0.9))"
+                : "linear-gradient(135deg, rgba(37,99,235,0.9), rgba(25,118,210,0.85))",
+
+            color: "#f9fafb",
+            fontWeight: "600",
+            borderRadius: "12px",
+            padding: window.innerWidth < 500 ? "6px 10px" : "8px 16px",
+            fontSize: window.innerWidth < 500 ? "13px" : "15px",
+            letterSpacing: "0.25px",
             fontFamily: "'Poppins', sans-serif",
-            backdropFilter: "blur(8px)",
-            width: window.innerWidth < 500 ? "85%" : "auto",
-            alignSelf: "center",
+
+            backdropFilter: "blur(8px) saturate(160%)",
+            boxShadow:
+              "0 3px 12px rgba(37, 99, 235, 0.3), 0 0 6px rgba(59, 130, 246, 0.2)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+
+            width: window.innerWidth < 500 ? "70%" : "auto",
+            maxWidth: "80vw",
+            margin: "0 auto",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+
+            transition: "all 0.3s ease-in-out",
           },
           iconTheme: {
-            primary: "#bfdbfe",
+            primary: "#93c5fd",
             secondary: "#1e3a8a",
           },
-          duration: 4000,
+          duration: 2000,
         });
 
         setTimeout(() => {
@@ -102,7 +114,6 @@ const Login: React.FC = () => {
     }
   };
 
-  // ✅ Handle Forgot Password Submission
   const handleForgotPassword = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!forgotEmail) return toast.error("Email is required");
@@ -149,9 +160,7 @@ const Login: React.FC = () => {
                   TODO
                 </span>
               </h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Sign in to continue
-              </p>
+              <p className="text-sm text-gray-500 mt-1">Sign in to continue</p>
             </>
           ) : (
             <>

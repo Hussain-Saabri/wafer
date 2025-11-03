@@ -4,7 +4,7 @@ import axios, {
   AxiosError,
 } from "axios";
 import { BASE_URL } from "./constants";
-console.log("✅ Base URL:", import.meta.env.VITE_API_BASE_URL);
+console.log("Base URL:", import.meta.env.VITE_API_BASE_URL);
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,

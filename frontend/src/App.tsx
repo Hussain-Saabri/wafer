@@ -12,7 +12,7 @@ import VerifyOtp from "./pages/Verify-otp";
 const App: React.FC = () => {
   return (
     <BrowserRouter>
-      {/* 🔔 Toast Notifications */}
+      {/* Toast Notifications */}
       <Toaster
         position="top-right"
         toastOptions={{

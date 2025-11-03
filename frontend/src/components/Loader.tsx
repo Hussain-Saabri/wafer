@@ -19,7 +19,7 @@ export default function Loading() {
         height={100}
         width={10}
         color="#2563eb"
-        aria-label="loading" // ✅ correct ARIA format
+        aria-label="loading" 
       />
       <h1
         style={{

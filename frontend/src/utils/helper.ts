@@ -6,7 +6,7 @@ export const validateEmail = (email: string): boolean => {
 export const getInitials = (name: string): string => {
   if (!name) return "";
 
-  const words = name.trim().split(/\s+/); // safer: handles multiple spaces
+  const words = name.trim().split(/\s+/); 
   let initials = "";
 
   for (let i = 0; i < Math.min(words.length, 2); i++) {

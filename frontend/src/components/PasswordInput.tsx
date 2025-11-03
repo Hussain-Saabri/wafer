@@ -5,7 +5,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 interface PasswordInputProps {
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string; // ✅ optional prop
+  placeholder?: string; 
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
