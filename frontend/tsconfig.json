@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    /* ✅ Basic settings */
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react-jsx",
+
+    /* ✅ Type definitions */
+    "types": ["node"],
+
+    /* ✅ Module system */
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+
+    /* ✅ Strict mode and helpful checks */
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    /* ✅ Output directories (optional) */
+    // "rootDir": "./src",
+    // "outDir": "./dist",
+
+    /* ✅ Source maps for debugging */
+    "sourceMap": true,
+
+    /* ✅ Declaration files (if you’re publishing a library) */
+    // "declaration": true,
+    // "declarationMap": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
