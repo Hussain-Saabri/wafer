@@ -1,19 +1,23 @@
 import mysql from "mysql2/promise";
 
-const db = await mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-});
+let db;
 
-try {
-  const connection = await db.getConnection();
-  console.log("✅ Connected to Database!");
-  connection.release();
-} catch (err) {
-  console.error("Error connecting to MySQL:", err);
-}
+(async () => {
+  try {
+    db = await mysql.createPool({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: process.env.DB_PORT,
+    });
+
+    const connection = await db.getConnection();
+    console.log("✅ Connected to Database!");
+    connection.release();
+  } catch (err) {
+    console.error("❌ Error connecting to MySQL:", err);
+  }
+})();
 
 export default db;

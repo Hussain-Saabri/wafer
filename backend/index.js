@@ -519,4 +519,8 @@ app.post("/create-account", async (req, res) => {
   }
 });
 
+const PORT = process.env.PORT || 8000; // ✅ Render gives its own port
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
 
