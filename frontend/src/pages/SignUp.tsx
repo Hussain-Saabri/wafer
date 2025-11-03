@@ -28,6 +28,7 @@ const SignUp: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
+    console.log("Inside the signup function");
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -86,13 +87,13 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-white to-purple-100 px-4">
       <div className="w-full max-w-md bg-white/80 backdrop-blur-xl shadow-2xl rounded-2xl p-8 sm:p-10 space-y-6 border border-gray-200 mb-10">
         <h4 className="text-3xl text-center font-extrabold text-gray-900 m-0">
           Create Account
         </h4>
         <h1 className="text-3xl text-center font-extrabold text-gray-900">
-          <span className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-emerald-500 to-lime-400 drop-shadow-md">
+          <span className="text-3xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-emerald-500 to-lime-400 drop-shadow-md">
             TODO
           </span>
         </h1>

@@ -39,7 +39,7 @@ const VerifyOtp: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+   
 
     try {
       const response = await axiosInstance.post("/verify-otp", { email, otp });
@@ -49,13 +49,6 @@ const VerifyOtp: React.FC = () => {
           toast.error("Please enter the 6-digit OTP to proceed.", {
             ...toastStyleMobile,
             style: { ...toastStyleMobile.style, background: "#e53e3e", color: "#fff" },
-          });
-          break;
-
-        case "OTP has expired":
-          toast.error("OTP has expired! Please resend OTP.", {
-            ...toastStyleMobile,
-            style: { ...toastStyleMobile.style, background: "#dc2626", color: "#fff" },
           });
           break;
 
@@ -125,7 +118,7 @@ const VerifyOtp: React.FC = () => {
 
         <p className="text-gray-500 text-center mb-6 text-sm sm:text-base">
           Enter the 6-digit code sent to{" "}
-          <span className="font-medium text-gray-800 break-words">{email}</span>
+          <span className="font-medium text-gray-800 wrap-break-words">{email}</span>
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
