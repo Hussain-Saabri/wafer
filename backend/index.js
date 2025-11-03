@@ -1,32 +1,24 @@
-require("dotenv").config();
-const express = require("express");
+import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
+import cors from "cors";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import sgMail from "@sendgrid/mail";
+import db from "./db.js";
+import { authenticateToken } from "./utilities.js";
+
 const app = express();
-const db = require("./db"); //importing the db
-const cors = require("cors");
 app.use(cors());
 app.use(express.json());
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { authenticateToken } = require("./utilities");
-const sgMail = require("@sendgrid/mail");
-
-
-
-
-
 
 app.get("/", (req, res) => {
-  res.send("app started");
-});
-const PORT = process.env.DB_PORT || 8000;
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  res.send("✅ Server started successfully");
 });
 
-// initialiing the sendGrid(working successfully)
-sgMail.setApiKey( process.env.SENDGRID_API_KEY );
-// adding the task
+// SendGrid setup
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 app.post("/create-account", async (req, res) => {
   try {
@@ -159,7 +151,7 @@ app.post("/login", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    console.log("✅ Login successful for:", user.email);
+    console.log("Login successful for:", user.email);
 
     // 5️⃣ Send response
     return res.status(200).json({
