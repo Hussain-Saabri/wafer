@@ -26,7 +26,7 @@ function Home() {
         return;
       }
 
-      const response = await axios.get(`http://localhost:8000/all-task/${user_id}`);
+      const response = await axios.get(`${API_BASE}/all-task/${user_id}`);
       console.log("Fetched tasks:", response.data);
       setTask(response.data.tasks || []);
     } catch (error) {
@@ -46,7 +46,7 @@ function Home() {
   // Update task status
   const handleUpdate = async () => {
     try {
-      const response = await axios.put(`http://localhost:8000/update-task/${selectedTask.id}`);
+      const response = await axios.put(`${API_BASE}/update-task/${selectedTask.id}`);
       toast.success("Task Updated Successfully!", {
         style: {
           background: "linear-gradient(145deg, #22c55e, #15803d)",
@@ -237,11 +237,17 @@ function Home() {
                   </span>
                   <div>
                     <h2 className="text-sm font-bold uppercase text-gray-800">
-                      {ele.title}
-                    </h2>
-                    <p className="text-xs text-gray-500 truncate ">
-                      {ele.description}
-                    </p>
+  {ele.title && ele.title.length > 15
+    ? ele.title.slice(0, 15) + "..."
+    : ele.title}
+</h2>
+
+                   <p className="text-xs text-gray-500">
+  {ele.description.length > 10 
+    ? ele.description.slice(0, 20) + "..." 
+    : ele.description}
+</p>
+
                   </div>
                 </div>
 
@@ -329,6 +335,9 @@ function Home() {
           </div>
         </div>
       )}
+
+
+      
     </>
   );
 }

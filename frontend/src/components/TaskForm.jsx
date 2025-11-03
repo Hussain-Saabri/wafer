@@ -34,7 +34,7 @@ console.log(user_id);
     }
 
     try {
-      const response = await axios.post(`http://localhost:8000/add`, {
+      const response = await axios.post(`${API_BASE}/add`, {
         title,
         description,
         user_id
