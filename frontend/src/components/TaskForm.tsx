@@ -40,7 +40,7 @@ console.log(user_id);
         user_id
       });
      
-      toast.success("Note Added Successfully!", {
+      toast.success("Task Added Successfully!", {
   style: {
     background: "linear-gradient(145deg, #34d399, #059669)",
     color: "#e6fffa",
