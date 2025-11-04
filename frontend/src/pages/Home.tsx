@@ -287,7 +287,7 @@ function Home() {
           {/* ✅ Login / Logout */}
           <button
             onClick={token ? handleLogout : handleLogin}
-            className="bg-amber-500 text-white font-semibold px-6 py-2 rounded-lg mb-6 hover:bg-amber-600 transition"
+            className="bg-amber-500 text-white cursor-pointer font-semibold px-6 py-2 rounded-lg mb-6 hover:bg-amber-600 transition"
           >
             {token ? "Logout" : "Login"}
           </button>
