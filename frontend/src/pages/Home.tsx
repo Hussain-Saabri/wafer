@@ -198,9 +198,6 @@ function Home() {
   },
   duration: 2500,
 });
-
-
-
     setToken(null);
     navigate("/login");
   };
@@ -269,7 +266,7 @@ function Home() {
 
                 <button
                   onClick={() => handleView(ele)}
-                  className="bg-blue-500 text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-blue-600 transition mt-2"
+                  className="bg-blue-500 text-white cursor-pointer text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-blue-600 transition mt-2"
                 >
                   View
                 </button>
