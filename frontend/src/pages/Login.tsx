@@ -12,6 +12,7 @@ interface LoginResponse {
     user?: {
       user_id: string;
       email?: string;
+      fullname?:string;
     };
     message?: string;
   };
@@ -61,6 +62,7 @@ const Login: React.FC = () => {
 
         localStorage.setItem("token", response.data.accessToken);
         localStorage.setItem("user_id", response.data.user?.user_id || "");
+        localStorage.setItem("userName", response.data.user?.fullname || "");
 
         toast.success("Login Sucessfully!", {
           style: {

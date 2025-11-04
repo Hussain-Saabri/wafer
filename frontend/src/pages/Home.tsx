@@ -5,13 +5,14 @@ import { faCircleCheck, faXmark, faPen } from "@fortawesome/free-solid-svg-icons
 import axios from "axios";
 import Loader from "../components/Loader";
 import toast from "react-hot-toast";
-
+import { getInitials } from "../utils/helper";
 function Home() {
   const [token, setToken] = useState(false);
   const [task, setTask] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [name,setName] = useState(false);
   const navigate = useNavigate();
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -49,7 +50,7 @@ function Home() {
       const response = await axios.put(`${API_BASE}/update-task/${selectedTask.id}`);
       toast.success("Task Updated Successfully!", {
   style: {
-    // 🌿 Fresh green gradient with soft glow
+    // Fresh green gradient with soft glow
     background:
       window.innerWidth < 500
         ? "linear-gradient(160deg, #22c55e, #16a34a)"
@@ -64,13 +65,13 @@ function Home() {
     fontFamily: "'Poppins', sans-serif",
     textTransform: "capitalize",
 
-    // 🧊 Glass effect and soft depth
+    // Glass effect and soft depth
     backdropFilter: "blur(8px) saturate(180%)",
     boxShadow:
       "0 6px 20px rgba(34, 197, 94, 0.45), 0 0 12px rgba(74, 222, 128, 0.35)",
     border: "1px solid rgba(255, 255, 255, 0.15)",
 
-    // ⚙️ Layout and responsiveness
+  
     width: window.innerWidth < 500 ? "85%" : "auto",
     maxWidth: "90vw",
     margin: "0 auto",
@@ -83,8 +84,8 @@ function Home() {
     transition: "all 0.3s ease-in-out",
   },
   iconTheme: {
-    primary: "#bbf7d0", // pastel green icon
-    secondary: "#14532d", // dark green accent
+    primary: "#bbf7d0",
+    secondary: "#14532d", 
   },
   duration: 2000,
 });
@@ -102,37 +103,48 @@ function Home() {
   };
 
   // Delete a task
-  const handleDelete = async () => {
-    try {
-      const response = await axios.delete(`${API_BASE}/del-task/${selectedTask.id}`);
-      toast.success("Task Deleted Successfully!", {
-        style: {
-          background: "linear-gradient(145deg, #ef4444, #b91c1c)",
-          color: "#ffe4e6",
-          fontWeight: "700",
-          borderRadius: "16px",
-          padding: "10px 24px",
-          boxShadow:
-            "0 6px 20px rgba(239, 68, 68, 0.5), 0 0 10px rgba(255, 182, 193, 0.3)",
-          fontSize: "18px",
-          letterSpacing: "0.7px",
-          textTransform: "capitalize",
-          fontFamily: "'Poppins', sans-serif",
-          backdropFilter: "blur(8px)",
-        },
-        duration: 4000,
-      });
+ const handleDelete = async () => {
+  try {
+    const response = await axios.delete(`${API_BASE}/del-task/${selectedTask.id}`);
 
-      setLoading(true);
-      setTimeout(() => {
-        setSelectedTask(null);
-        fetchTasks();
-        setLoading(false);
-      }, 1000);
-    } catch (error) {
-      console.log("Delete error:", error);
-    }
-  };
+    toast.success("Task Deleted Successfully!", {
+      style: {
+        background: "linear-gradient(145deg, #ef4444, #b91c1c)",
+        color: "#ffe4e6",
+        fontWeight: "700",
+        borderRadius: "16px",
+        padding: "10px 24px",
+        boxShadow:
+          "0 6px 20px rgba(239, 68, 68, 0.5), 0 0 10px rgba(255, 182, 193, 0.3)",
+        fontSize: "18px",
+        letterSpacing: "0.7px",
+        textTransform: "capitalize",
+        fontFamily: "'Poppins', sans-serif",
+        backdropFilter: "blur(8px)",
+      },
+      duration: 3000,
+    });
+
+  
+    setTask((prev) => prev.filter((t) => t.id !== selectedTask.id));
+
+    // Reset selection and loading state
+    setSelectedTask(null);
+    setLoading(true);
+
+    // Optional: Refetch from backend to stay in sync
+    await fetchTasks();
+
+    setLoading(false);
+  } catch (error) {
+    console.error("Delete error:", error);
+    toast.error("Failed to delete task.");
+  }
+};
+
+
+
+ 
 
   // useEffect for loading and fetching
   useEffect(() => {
@@ -140,6 +152,9 @@ function Home() {
     if (!token) {
       navigate("/login");
     } else {
+      const getName = localStorage.getItem("userName");
+      console.log(getName);
+      setName(getName || "");
       setToken(token);
     }
 
@@ -201,6 +216,7 @@ function Home() {
     setToken(null);
     navigate("/login");
   };
+   
 
   if (loading) {
     return <Loader />;
@@ -213,28 +229,52 @@ function Home() {
         <div className="min-h-screen bg-black bg-opacity-50 text-white py-10 px-6 relative">
           {/* Header */}
           <div className="flex justify-between items-center mb-12">
+            {/* Title */}
             <h1 className="text-4xl font-extrabold text-center">
               <span className="text-gray-200">TODO</span>{" "}
               <span className="text-blue-500">LIST</span>
             </h1>
 
-            {/* Login / Logout */}
-            <button
-              className="bg-amber-500 px-5 py-3 cursor-pointer rounded-md font-semibold text-white hover:bg-amber-600 transition"
-              onClick={token ? handleLogout : handleLogin}
-            >
-              {token ? "Logout" : "Login"}
-            </button>
-          </div>
-
-          {/* Add Task */}
-          <div className="hidden sm:flex justify-center mb-10">
+            <div className="flex items-center gap-4">
+              
             <Link to="/add-task">
-              <button className="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition flex items-center justify-center gap-2 text-sm font-medium shadow-md cursor-pointer">
+              <button className="bg-green-700  px-5 py-3 cursor-pointer rounded-md font-semibold 
+                 text-white hover:bg-green-800 transition">
                 Add Todo <FontAwesomeIcon icon={faPen} />
               </button>
             </Link>
+         
+              {/* Displaying the name (avatar) */}
+              {name && (
+                <button
+                  className="bg-blue-800 w-12 h-12 flex items-center justify-center 
+                   cursor-pointer font-semibold text-white rounded-full transition"
+                >
+                  {getInitials(name)}
+                </button>
+              )}
+
+              {/* Login / Logout button */}
+              <button
+                className="bg-amber-500 px-5 py-3 cursor-pointer rounded-md font-semibold 
+                 text-white hover:bg-amber-600 transition"
+                onClick={token ? handleLogout : handleLogin}
+              >
+                {token ? "Logout" : "Login"}
+              </button>
+
+            </div>
           </div>
+
+          {/* Add Task */}
+          
+          {task.length === 0 && (
+  <div className="flex flex-col items-center justify-center h-[50vh]">
+    <h1 className="text-gray-400 text-5xl md:text-6xl italic font-semibold text-center">
+      Start creating a task ✍️
+    </h1>
+  </div>
+)}
 
           {/* Task Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-3 sm:px-0">
@@ -277,91 +317,131 @@ function Home() {
       </div>
 
       {/* 📱 Mobile View */}
-      <div className="block md:hidden">
-        <div className="flex flex-col items-center justify-center min-h-screen bg-[#1f1f1f] px-4 py-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-center mb-4">
-            <span className="text-gray-100">TODO</span>{" "}
-            <span className="text-blue-500">LIST</span>
-          </h1>
+  <div className="block md:hidden">
+  {/* 🔹 Top Header Bar */}
+ <div className="fixed top-0 left-0 w-full flex items-center justify-between bg-[#1f1f1f] px-5 py-4 z-50 shadow-lg border-b border-gray-800">
+  {/* Left: TODO LIST title */}
+  <h1 className="text-2xl font-extrabold tracking-wide">
+    <span className="text-gray-100">TODO</span>{" "}
+    <span className="text-blue-500">LIST</span>
+  </h1>
 
-          {/* ✅ Login / Logout */}
+  {/* Middle: User Avatar (if logged in) */}
+  {name && (
+    <div className="flex items-center gap-3">
+      <button
+        className="bg-blue-700 w-10 h-10 flex items-center justify-center 
+                   text-white font-semibold rounded-full shadow-md 
+                   hover:bg-blue-800 transition-transform active:scale-95"
+        title={name}
+      >
+        {getInitials(name)}
+      </button>
+    </div>
+  )}
+
+  {/* Right: Login/Logout Button */}
+  <button
+    onClick={token ? handleLogout : handleLogin}
+    className="bg-amber-500 text-white font-semibold px-4 py-2 rounded-lg 
+               hover:bg-amber-600 active:scale-95 shadow-md "
+  >
+    {token ? "Logout" : "Login"}
+  </button>
+</div>
+
+  {/* 🔹 Main Content Area */}
+  <div className="flex flex-col items-center justify-center min-h-screen bg-[#1f1f1f] px-4 pt-28 pb-20">
+    {/* Task Cards */}
+    <div className="w-full max-w-md flex flex-col gap-4">
+
+
+     {task.length === 0 && (
+  <div className="flex flex-col items-center justify-center h-[60vh] space-y-4 text-center animate-fadeIn">
+    <h1 className="text-gray-300 text-3xl sm:text-4xl font-semibold italic tracking-wide">
+      Start adding your first task
+    </h1>
+    <span className="text-5xl animate-bounce">✍️</span>
+  </div>
+)}
+
+      {(showAll ? task : task.slice(0, 4)).map((ele, index) => (
+        <div
+          key={index}
+          className="flex items-center justify-between bg-white rounded-full px-5 py-4 shadow-md hover:shadow-lg transition-all relative"
+        >
+          <div className="flex items-center gap-3">
+            <span
+              className={`text-xl ${
+                ele.status === "completed" ? "text-green-500" : "text-black"
+              }`}
+            >
+              <FontAwesomeIcon icon={faCircleCheck} />
+            </span>
+            <div>
+              <h2 className="text-sm font-bold uppercase text-gray-800">
+                {ele.title && ele.title.length > 15
+                  ? ele.title.slice(0, 15) + "..."
+                  : ele.title}
+              </h2>
+
+              <p className="text-xs text-gray-500">
+                {ele.description.length > 10
+                  ? ele.description.slice(0, 20) + "..."
+                  : ele.description}
+              </p>
+            </div>
+          </div>
+
           <button
-            onClick={token ? handleLogout : handleLogin}
-            className="bg-amber-500 text-white cursor-pointer font-semibold px-6 py-2 rounded-lg mb-6 hover:bg-amber-600 transition"
+            onClick={() => handleView(ele)}
+            className="absolute top-5 right-3 bg-blue-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-blue-600 transition"
           >
-            {token ? "Logout" : "Login"}
+            VIEW
           </button>
-
-          {/* Task Cards */}
-          <div className="w-full max-w-md flex flex-col gap-4">
-            {(showAll ? task : task.slice(0, 4)).map((ele, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between bg-white rounded-full px-5 py-4 shadow-md hover:shadow-lg transition-all relative"
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`text-xl ${
-                      ele.status === "completed"
-                        ? "text-green-500"
-                        : "text-black"
-                    }`}
-                  >
-                    <FontAwesomeIcon icon={faCircleCheck} />
-                  </span>
-                  <div>
-                    <h2 className="text-sm font-bold uppercase text-gray-800">
-                      {ele.title && ele.title.length > 15
-                        ? ele.title.slice(0, 15) + "..."
-                        : ele.title}
-                    </h2>
-
-                    <p className="text-xs text-gray-500">
-                      {ele.description.length > 10
-                        ? ele.description.slice(0, 20) + "..."
-                        : ele.description}
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => handleView(ele)}
-                  className="absolute top-5 right-3 bg-blue-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-blue-600 transition"
-                >
-                  VIEW
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* View All / Add Task */}
-          <div className="flex flex-col items-center gap-4 mt-10">
-            {!showAll && task.length > 4 && (
-              <button
-                onClick={() => setShowAll(true)}
-                className="text-gray-200 underline hover:text-white"
-              >
-                View All
-              </button>
-            )}
-            {showAll && (
-              <button
-                onClick={() => setShowAll(false)}
-                className="text-gray-200 underline hover:text-white"
-              >
-                Show Less
-              </button>
-            )}
-            <Link to="/add-task">
-              <button className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition flex items-center gap-2 font-medium">
-                Add Todo <FontAwesomeIcon icon={faPen} />
-              </button>
-            </Link>
-          </div>
         </div>
-      </div>
+      ))}
+    </div>
 
-      {/* 🪟 Popup */}
+    {/* View All / Show Less */}
+    <div className="flex flex-col items-center gap-4 mt-10">
+      {!showAll && task.length > 4 && (
+        <button
+          onClick={() => setShowAll(true)}
+          className="text-gray-200 underline hover:text-white"
+        >
+          View All
+        </button>
+      )}
+      {showAll && (
+        <button
+          onClick={() => setShowAll(false)}
+          className="text-gray-200 underline hover:text-white"
+        >
+          Show Less
+        </button>
+      )}
+    </div>
+  </div>
+
+  
+  <Link to="/add-task">
+    <button
+  className="fixed bottom-2 right-6 bg-blue-700 text-white w-16 h-16 
+             rounded-full flex items-center justify-center 
+             shadow-[0_4px_15px_rgba(59,130,246,0.4)] 
+             hover:shadow-[0_6px_20px_rgba(59,130,246,0.6)] 
+             hover:bg-blue-800 active:scale-95 
+             transition-all duration-300 ease-in-out"
+>
+  <FontAwesomeIcon icon={faPen} className="text-xl" />
+</button>
+  </Link>
+</div>
+
+
+
+      {/* Popup */}
       {selectedTask && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="relative bg-white text-gray-800 rounded-xl w-full max-w-md max-h-[90vh] shadow-2xl overflow-hidden">

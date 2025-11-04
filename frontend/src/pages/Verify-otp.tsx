@@ -2,7 +2,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, ChangeEvent, FormEvent } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
-import Loader from "../components/Loader";
+
+import ClipLoader from "react-spinners/ClipLoader";
+
 
 
 interface LocationState {
@@ -38,11 +40,13 @@ const VerifyOtp: React.FC = () => {
 
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
    
 
     try {
       const response = await axiosInstance.post("/verify-otp", { email, otp });
+      
 
       switch (response.data.message) {
         case "otp is required":
@@ -65,11 +69,17 @@ const VerifyOtp: React.FC = () => {
           break;
 
         case "Otp doesnot match":
-          toast.error("Incorrect OTP. Please try again.", {
-            ...toastStyleMobile,
-            style: { ...toastStyleMobile.style, background: "rgba(37,99,235,0.8)", color: "#fff" },
-          });
-          break;
+  toast.error("Incorrect OTP. Please try again.", {
+    ...toastStyleMobile,
+    duration: 2000, 
+    style: { 
+      ...toastStyleMobile.style, 
+      background: "rgba(37,99,235,0.8)", 
+      color: "#fff" 
+    },
+  });
+  break;
+
 
         default:
           toast.error("Unexpected response. Try again.", toastStyleMobile);
@@ -154,27 +164,22 @@ const VerifyOtp: React.FC = () => {
           </div>
 
           <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white py-3 rounded-lg font-medium transition-colors"
-          >
-            {loading ? <Loader /> : "Verify OTP"}
-          </button>
+  type="submit"
+  disabled={loading}
+  className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-blue-300 text-white py-3 rounded-lg font-medium transition-colors"
+>
+  {loading ? (
+    <div className="flex justify-center items-center">
+      <ClipLoader color="#ffffff" size={22} />
+    </div>
+  ) : (
+    "Verify OTP"
+  )}
+</button>
+
         </form>
 
-        <div className="text-center text-sm text-gray-600 mt-5">
-          Didn’t get the code?{" "}
-          {loading ? (
-            <Loader />
-          ) : (
-            <button
-              onClick={handleResendOtp}
-              className="text-blue-600 hover:underline focus:outline-none"
-            >
-              Resend OTP
-            </button>
-          )}
-        </div>
+      
       </div>
     </div>
   );
